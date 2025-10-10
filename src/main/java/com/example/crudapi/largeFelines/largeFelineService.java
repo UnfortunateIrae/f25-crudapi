@@ -1,78 +1,104 @@
 package com.example.crudapi.largeFelines;
 
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.io.File;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-
+import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class largeFelineService {
-    private final static ObjectMapper objectMapper = new ObjectMapper();
-    private final static File jsonFile = new File("felines.json");
 
     @Autowired
     private largeFelineRepository repository;
 
-    private ArrayList<largeFeline> felines = new ArrayList<>();
+    private List<largeFeline> inMemoryList = new ArrayList<>();
 
-    public Object getAllFelines() {
-        return felines;
+    public List<largeFeline> getAllFelines() {
+        List<largeFeline> result = new ArrayList<>();
+        result.addAll(inMemoryList);
+        result.addAll(repository.findAll());
+        return result;
     }
-    public Object getFelineById(@PathVariable Long id) {
-        return felines.stream().filter(f -> f.getId().equals(id)).findFirst().orElse(null);
+
+    public Object getFelineById(Long id) {
+        return repository.findById(id).orElse(
+                inMemoryList.stream().filter(f -> f.getId().equals(id)).findFirst().orElse(null));
     }
 
     public Object createFeline(largeFeline feline) {
-        felines.add(feline);
+        inMemoryList.add(feline);
         return repository.save(feline);
     }
 
-    public void updateFeline(Long id, largeFeline feline) {
-        repository.findById(id).ifPresent(existingFeline -> {
-            existingFeline.setName(feline.getName());
-            existingFeline.setHabitat(feline.getHabitat());
-            existingFeline.setWeight(feline.getWeight());
-            existingFeline.setDescription(feline.getDescription());
-            existingFeline.setPopulation(feline.getPopulation());
-            repository.save(existingFeline);
+    public void updateFeline(Long id, largeFeline updatedFeline) {
+        repository.findById(id).ifPresent(existing -> {
+            updatedFeline.setId(id);
+            repository.save(updatedFeline);
         });
+
+        for (int i = 0; i < inMemoryList.size(); i++) {
+            if (inMemoryList.get(i).getId().equals(id)) {
+                inMemoryList.set(i, updatedFeline);
+                break;
+            }
+        }
     }
 
     public void deleteFeline(Long id) {
-        felines.removeIf(f -> f.getId().equals(id));
         repository.deleteById(id);
+        inMemoryList.removeIf(f -> f.getId().equals(id));
     }
 
-    public Object getFelinesByName(String name) {
-        return repository.findByName(name);
+    public List<largeFeline> getFelinesByName(String name) {
+        List<largeFeline> result = new ArrayList<>();
+        for (largeFeline f : inMemoryList) {
+            if (f.getName().equalsIgnoreCase(name))
+                result.add(f);
+        }
+        for (largeFeline f : repository.findAll()) {
+            if (f.getName().equalsIgnoreCase(name))
+                result.add(f);
+        }
+        return result;
     }
 
-    public Object getFelinesByHabitat(String habitat) {
-        return repository.getByHabitat(habitat);
-    }
-    public Object getFelinesByPopulationGreaterThan(Integer population) {
-        return repository.getByPopulationGreaterThan(population);
-    }
-
-    public Object getFelinesByWeightGreatherThan(Double weight) {
-        return repository.getByWeightGreaterThan(weight);
+    public List<largeFeline> getFelinesByPopulationGreaterThan(Integer population) {
+        return repository.findAll().stream()
+                .filter(f -> f.getPopulation() > population)
+                .toList(); // Java 16+; use .collect(Collectors.toList()) if older
     }
 
-    public void writeJson(largeFeline feline) throws Exception {
-        Object current = getAllFelines();
-        ((ArrayList<largeFeline>) current).add(feline);
-        objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, current);
+    public List<largeFeline> getFelinesByWeightGreaterThan(Double weight) {
+        return repository.findAll().stream()
+                .filter(f -> f.getWeight() > weight)
+                .toList(); // or .collect(Collectors.toList())
     }
 
-    public static Object readJson() throws Exception {
-        if (!jsonFile.exists()) return new largeFelineService().getAllFelines();
-        return objectMapper.readValue(jsonFile,
-                objectMapper.getTypeFactory().constructCollectionType(List.class, largeFeline.class));
+    public void writeJson(largeFeline feline) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            File file = new File("felines.json");
+            List<largeFeline> list = (List<largeFeline>) readJson();
+            list.add(feline);
+            mapper.writeValue(file, list);
+        } catch (Exception e) {
+            throw new RuntimeException("JSON write failed", e);
+        }
+    }
+
+    public static Object readJson() {
+        try {
+            File file = new File("felines.json");
+            if (!file.exists())
+                return new ArrayList<>();
+            String json = new String(Files.readAllBytes(file.toPath()));
+            ObjectMapper mapper = new ObjectMapper();
+            return List.of(mapper.readValue(json, largeFeline[].class));
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
     }
 }

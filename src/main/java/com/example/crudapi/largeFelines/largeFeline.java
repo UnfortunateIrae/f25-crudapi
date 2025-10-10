@@ -27,11 +27,12 @@ public class largeFeline {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name="population", nullable = false)
+    @Column(name = "population", nullable = false)
     private Integer population;
 
     // Constructors
-    public largeFeline() {}
+    public largeFeline() {
+    }
 
     public largeFeline(String name, String habitat, Double weight, String description, Integer population) {
         this.name = name;
