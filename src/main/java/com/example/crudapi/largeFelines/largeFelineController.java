@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/felines")
 public class largeFelineController {
 
     @Autowired
@@ -28,7 +30,7 @@ public class largeFelineController {
         service.createFeline(new largeFeline("Cheetah", "Savannah", 150.0, "Fastest land animal", 7100));
     }
 
-    @GetMapping("/felines")
+    @GetMapping
     public ResponseEntity<Object> getAllFelines() {
         return ResponseEntity.ok(service.getAllFelines());
     }
@@ -70,10 +72,15 @@ public class largeFelineController {
 
     @GetMapping("/name")
     public ResponseEntity<Object> getFelinesByName(@RequestParam String name) {
-        Object result = service.getFelinesByName(name);
-        return (result != null)
-                ? ResponseEntity.ok(result)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No felines found with that name");
+        List<largeFeline> result = new ArrayList<>();
+        for (largeFeline feline : (List<largeFeline>) service.getAllFelines()) {
+            if (feline.getName().contains(name)) {
+                result.add(feline);
+            }
+        }
+        return result.isEmpty()
+                ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("No felines found with that name")
+                : ResponseEntity.ok(result);
     }
 
     @GetMapping("/habitat")
@@ -124,26 +131,6 @@ public class largeFelineController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Server error: " + e.getMessage());
-        }
-    }
-
-    @PostMapping("/writeFile")
-    public ResponseEntity<String> writeJson(@RequestBody largeFeline feline) {
-        try {
-            service.writeJson(feline);
-            return ResponseEntity.ok("Feline written to JSON successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to write feline to JSON: " + e.getMessage());
-        }
-    }
-
-    @GetMapping("/readFile")
-    public ResponseEntity<Object> readJson() {
-        try {
-            return ResponseEntity.ok(largeFelineService.readJson());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to read file");
         }
     }
 }
