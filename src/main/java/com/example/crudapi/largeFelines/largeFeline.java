@@ -27,7 +27,7 @@ public class largeFeline {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name="Population", nullable = false)
+    @Column(name="population", nullable = false)
     private Integer population;
 
     // Constructors
