@@ -1,5 +1,6 @@
 package com.example.crudapi.largeFelines;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class largeFelineController {
 
     @Autowired
     private largeFelineService service;
+    private List<largeFeline> felines;
 
     public void addSomeFelines() {
         service.createFeline(new largeFeline("Lion", "Savannah", 420.0, "Large social cat", 20000));
@@ -30,8 +32,6 @@ public class largeFelineController {
     @GetMapping("/felines")
     public ResponseEntity<Object> getAllFelines() {
         addSomeFelines();
-        List<largeFeline> felines = (List<largeFeline>) service.getAllFelines();
-        System.out.println("Felines in database: " + felines.size());
         return new ResponseEntity<>(service.getAllFelines(), HttpStatus.OK);
     }
 
@@ -56,8 +56,8 @@ public class largeFelineController {
         largeFeline existingFeline = (largeFeline) service.getFelineById(felineId);
         if (existingFeline != null) {
             feline.setId(felineId);
-            largeFeline updatedFeline = (largeFeline) service.updateFeline(felineId, feline);
-            return new ResponseEntity<>(updatedFeline, HttpStatus.OK);
+            service.updateFeline(felineId, feline);
+            return new ResponseEntity<>(feline, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Feline not found", HttpStatus.NOT_FOUND);
         }
@@ -75,9 +75,9 @@ public class largeFelineController {
     }
 
     @GetMapping("/felines/name")
-    public ResponseEntity<Object> getFelinesByName(@RequestParam String name) {
+    public ResponseEntity<Object> getFelinesByName(@RequestParam(required = false) String name) {
        largeFeline feline = (largeFeline) service.getFelinesByName(name);
-       if (feline != null) {
+       if (name != null) {
             return new ResponseEntity<>(feline, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Feline not found", HttpStatus.NOT_FOUND);
@@ -86,12 +86,15 @@ public class largeFelineController {
 
     @GetMapping("/felines/habitat")
     public ResponseEntity<Object> getFelinesByHabitat(@RequestParam String habitat) {
-        largeFeline feline = (largeFeline) service.getFelinesByHabitat(habitat);
-       if (feline != null) {
-            return new ResponseEntity<>(feline, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Feline not found", HttpStatus.NOT_FOUND);
-        }
+       new ArrayList<>(habitats);
+       for (largeFeline feline : felines) {
+           if (feline.getHabitat().equalsIgnoreCase(habitat)) {
+               habitat.add(feline);
+           }
+       }
+         if (habitat != null) {
+                return new ResponseEntity<>(habitat, HttpStatus.OK);
+          }
     }
 
     @GetMapping("/felines/population")
@@ -111,6 +114,26 @@ public class largeFelineController {
             return new ResponseEntity<>(feline, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Feline not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/writeFile")
+    public ResponseEntity<String> writeJson(@RequestBody largeFeline feline) {
+        try {
+            service.writeJson(feline);
+            return ResponseEntity.ok("Feline written to JSON successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to write feline to JSON: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/readFile")
+    public ResponseEntity<List<largeFeline>> readJson() {
+        try {
+            List<largeFeline> feline =(List<largeFeline>) largeFelineService.readJson();
+            return ResponseEntity.ok(felines);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

@@ -3,12 +3,19 @@ package com.example.crudapi.largeFelines;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.io.File;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Service
 public class largeFelineService {
+    private final static ObjectMapper objectMapper = new ObjectMapper();
+    private final static File jsonFile = new File("felines.json");
+
     @Autowired
     private largeFelineRepository repository;
 
@@ -26,14 +33,15 @@ public class largeFelineService {
         return repository.save(feline);
     }
 
-    public Object updateFeline(Long id, largeFeline feline) {
-        for (int i = 0; i < felines.size(); i++) {
-            if (felines.get(i).getId().equals(id)) {
-                felines.set(i, feline);
-                return repository.save(feline);
-            }
-        }
-        return null;
+    public void updateFeline(Long id, largeFeline feline) {
+        repository.findById(id).ifPresent(existingFeline -> {
+            existingFeline.setName(feline.getName());
+            existingFeline.setHabitat(feline.getHabitat());
+            existingFeline.setWeight(feline.getWeight());
+            existingFeline.setDescription(feline.getDescription());
+            existingFeline.setPopulation(feline.getPopulation());
+            repository.save(existingFeline);
+        });
     }
 
     public void deleteFeline(Long id) {
@@ -54,5 +62,17 @@ public class largeFelineService {
 
     public Object getFelinesByWeightGreatherThan(Double weight) {
         return repository.getByWeightGreaterThan(weight);
+    }
+
+    public void writeJson(largeFeline feline) throws Exception {
+        Object current = getAllFelines();
+        ((ArrayList<largeFeline>) current).add(feline);
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, current);
+    }
+
+    public static Object readJson() throws Exception {
+        if (!jsonFile.exists()) return new largeFelineService().getAllFelines();
+        return objectMapper.readValue(jsonFile,
+                objectMapper.getTypeFactory().constructCollectionType(List.class, largeFeline.class));
     }
 }
