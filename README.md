@@ -1,1 +1,262 @@
 # f25-crudapi
+Simple CRUD API for Large Feline Objects with JPA (Hibernate)
+Demo Video: https://1drv.ms/v/c/b8595f92942d8014/EcQgPeBoBmxHuETXeUIzbzcBSXX76RDXT30HysdNEdt7Bg?e=iUfJQH
+
+### Version
+1.0.0
+
+## Installation
+- Get the project
+    - clone
+        ```
+      git clone https://github.com/csc340-uncg/f25-crudapi.git
+        ```
+    - OR download zip.
+- Open the project in VS Code.
+- This project is built to run with jdk 21.
+- [Dependencies](https://github.com/UnfortunateIrae/f25-crudapi/blob/main/pom.xml)) to JPA and Postgres in addition to the usual Spring Web. JPA handles the persistence, Postgresql is the database to be used.
+- [`/src/main/resources/application.properties`] This file has the configuration for the PostgreSQL database to use for the API.
+  - You MUST have the database up and running before running the project!
+    - Login to your neon.tech account.
+    - Locate your database project.
+    - On the project dashboard, click on "Connect" and select Java.
+    - Copy the connection string provided.
+    - Paste it as a value for the property `spring.datasource.url`. No quotation marks.
+- Build and run the main class. You should see a new table created in the Neon database.
+
+## API Endpoints
+Base URL: [`http://localhost:8080/felines`](http://localhost:8080/felines)
+
+1. ### [`/`](http://localhost:8080/felines) (GET)
+Gets a list of all Big Cats in the database.
+```
+[
+  {
+    "name":"Lion",
+    "habitat":"Savannah Plains",
+    "weight":430.0,
+    "description":"King of the Savannah",
+    "population":21000,
+    "id":53
+  },
+  {
+    "name":"Tiger",
+    "habitat":"Forest",
+    "weight":500.0,
+    "description":"Largest cat species",
+    "population":3900,
+    "id":54
+  },
+  {
+    "name":"Leopard"
+    ,"habitat":"Forest"
+    ,"weight":200.0,
+    "description":"Spotted big cat",
+    "population":700000,
+    "id":55
+  },
+  {
+    "name":"Cheetah",
+    "habitat":"Savannah",
+    "weight":150.0,
+    "description":"Fastest land animal",
+    "population":7100,
+    "id":56
+  }
+]
+```
+2. ### [`/{id}`](http://localhost:8080/felines/1) (GET)
+Gets an individual Feline in the system. Each Feline is identified by a numeric `id`
+
+#### Parameters
+- Path Variable: `id` &lt;
+
+#### Response - A single Big Cat
+
+```
+  {
+    "name":"Lion",
+    "habitat":"Savannah Plains",
+    "weight":430.0,
+    "description":"King of the Savannah",
+    "population":21000,"id":53
+  }
+```
+
+3. ### [`/name`](http://localhost:8080/felines/name?name=a) (GET)
+Gets a list of students with a name that contains the given string.
+
+#### Parameters
+- query parameter: `name` &lt;
+
+#### Response - A JSON array of largeFeline objects.
+
+```
+[
+  {
+    "name":"Leopard",
+    "habitat":"Forest",
+    "weight":200.0,
+    "description":"Spotted big cat",
+    "population":700000,
+    "id":55
+  },
+  {
+    "name":"Cheetah",
+    "habitat":"Savannah",
+    "weight":150.0,
+    "description":"Fastest land animal",
+    "population":7100,
+    "id":56
+  }
+]
+```
+
+4. ### [`/habitat`](http://localhost:8080/felines/habitat?=habitat=Savannah) (GET)
+Gets a list of felines for a named major.
+
+#### Parameters
+- path variable: `habitat` &lt;
+
+#### Response - A JSON array of Feline objects.
+
+```
+[
+  {
+    "name":"Cheetah",
+    "habitat":"Savannah",
+    "weight":150.0,
+    "description":"Fastest land animal",
+    "population":7100,
+    "id":56
+  }
+]
+```
+5. ### [`/population`](http://localhost:8080/felines/population?population=4000) (GET)
+Gets a list of felines with a population meeting the Threshold.
+
+#### Parameters
+- query parameter: `population`
+#### Response - A JSON array of Feline objects.
+
+```
+[
+  {
+    "name":"Lion",
+    "habitat":"Savannah Plains",
+    "weight":430.0,
+    "description":"King of the Savannah",
+    "population":21000,
+    "id":53
+  },
+  {
+    "name":"Leopard",
+    "habitat":"Forest",
+    "weight":200.0,
+    "description":"Spotted big cat",
+    "population":700000,
+    "id":55
+  },
+  {
+    "name":"Cheetah",
+    "habitat":"Savannah",
+    "weight":150.0,
+    "description":"Fastest land animal",
+    "population":7100,
+    "id":56
+  }
+]
+```
+6. ### [`/weight`](http://localhost:8080/felines/weight?weight=400) (GET)
+Gets a list of felines with a weight meeting the Threshold.
+
+#### Parameters
+- query parameter: `weight`
+#### Response - A JSON array of Feline objects.
+
+```
+[
+  {
+    "name":"Lion",
+    "habitat":"Savannah Plains",
+    "weight":430.0,
+    "description":"King of the Savannah",
+    "population":21000,
+    "id":53
+  },
+  {
+    "name":"Tiger",
+    "habitat":"Forest",
+    "weight":500.0,
+    "description":"Largest cat species",
+    "population":3900,
+    "id":54
+  }
+]
+```
+7. ### [`/`](http://localhost:8080/felines) (POST)
+Create  a new Feline entry
+
+#### Request Body
+A feline object. Note the object does not include an ID as this is autogenerated.
+```
+{
+  "name":"Jaguar",
+  "habitat":"Rainforest",
+  "weight":210.5,
+  "description":"Powerful spotted cat",
+  "population":15000,
+  "id":61
+}
+```
+#### Response - The newly created Feline.
+
+```
+{
+  "name":"Jaguar",
+  "habitat":"Rainforest",
+  "weight":210.5,
+  "description":"Powerful spotted cat",
+  "population":15000,
+  "id":61
+}
+```
+8. ### [`/{id}`](http://localhost:8080/felines/53) (PUT)
+Update an existing Feline.
+
+#### Parameters
+- Path Variable: `id` &lt;
+
+#### Request Body
+A student object with the updates.
+```
+{
+  "name":"Lion",
+  "habitat":"Savannah Plains",
+  "weight":430.0,
+  "description":"King of the Savannah",
+  "population":21000,
+  "id":53
+}
+```
+#### Response - the updated Student object.
+```
+{
+  "name":"Lion",
+  "habitat":"Savannah Plains",
+  "weight":430.0,
+  "description":"King of the Savannah",
+  "population":21000,
+  "id":53
+}
+```
+
+9. ### [`/{id}`](http://localhost:8080/felines/61) (DELETE)
+Delete an existing Student.
+
+#### Parameters
+- Path Variable: `id` &lt;
+#### Response - confirmation message
+```
+Feline deleted successfully
+```
