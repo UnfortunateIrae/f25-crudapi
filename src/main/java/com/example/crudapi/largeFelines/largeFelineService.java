@@ -23,7 +23,7 @@ public class largeFelineService {
         return result;
     }
 
-    public Object getFelineById(Long id) {
+    public largeFeline getFelineById(Long id) {
         return repository.findById(id).orElse(
                 inMemoryList.stream().filter(f -> f.getId().equals(id)).findFirst().orElse(null));
     }
@@ -68,13 +68,26 @@ public class largeFelineService {
     public List<largeFeline> getFelinesByPopulationGreaterThan(Integer population) {
         return repository.findAll().stream()
                 .filter(f -> f.getPopulation() > population)
-                .toList(); // Java 16+; use .collect(Collectors.toList()) if older
+                .toList(); 
     }
 
     public List<largeFeline> getFelinesByWeightGreaterThan(Double weight) {
         return repository.findAll().stream()
                 .filter(f -> f.getWeight() > weight)
                 .toList(); // or .collect(Collectors.toList())
+    }
+
+    public List<largeFeline> getFelinesByHabitat(String habitat) {
+        List<largeFeline> result = new ArrayList<>();
+        for (largeFeline f : inMemoryList) {
+            if (f.getHabitat().equalsIgnoreCase(habitat))
+                result.add(f);
+        }
+        for (largeFeline f : repository.findAll()) {
+            if (f.getHabitat().equalsIgnoreCase(habitat))
+                result.add(f);
+        }
+        return result;
     }
 
     public void writeJson(largeFeline feline) {
