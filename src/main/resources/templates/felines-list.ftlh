@@ -7,7 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   </head>
   <body style="margin: 0; padding: 0;background-color: lightgray;">
-  <p>count: ${felines?size!0}</p>
     <ul>
         <style>
             ul {
@@ -34,10 +33,8 @@
                 background-color: #111;
             }
         </style>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="details.html">Details</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="new-animal-form.html">New Animal Form</a></li>
+        <li><a href="/felines">Home</a></li>
+        <li><a href="/felines/createForm">New Animal Form</a></li>
     </ul>
     <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
@@ -55,24 +52,35 @@
         <p>Dive into the fascinating world of animals. Discover unique facts, stunning images, and more about your favorite creatures.
              Click on the Name of an animal to learn more about it!</p>
     </header>
- <table class="table">
-    <#list felines as feline>
+  <table class="table table-bordered">
+    <thead>
       <tr>
-        <th style="text-align: center;">
-            <a href="/felines/${feline.id}">
-                <h1>${feline.name}</h1>
-            </a>
-        </th>
-
-        <td>
-            <img src="${feline.imageUrl!}" alt="${feline.name}" height="200" width="200">
-        </td>
-
-        <td style="text-align: center;">
-            ${feline.description}
-        </td>
+        <th style="text-align:center;">Name</th>
+        <th style="text-align:center;">Image</th>
+        <th style="text-align:center;">Description</th>
       </tr>
-    </#list>
+    </thead>
+    <tbody>
+      <#list felines as feline>
+        <tr>
+          <td style="text-align:center;">
+            <a href="/felines/${feline.id?c}" style="text-decoration:none; color:inherit;">
+              ${feline.name!''}
+            </a>
+          </td>
+
+          <td style="text-align:center;">
+            <img src="${feline.imageUrl!'avatar.png'}" 
+                alt="${feline.name!''}" 
+                style="height:200px; width:200px; object-fit:cover;">
+          </td>
+
+          <td style="text-align:center;">
+            ${feline.description!''}
+          </td>
+        </tr>
+      </#list>
+   </tbody>
   </table>
     <br><br>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
