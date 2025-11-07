@@ -23,7 +23,7 @@ public class largeFelineController {
         return "felines-list";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/felines/{id}")
     public String getFelineById(@PathVariable("id") Long id, Model model) {
         model.addAttribute("feline", service.getFelineById(id));
         model.addAttribute("title", "Feline Details");
@@ -32,7 +32,7 @@ public class largeFelineController {
 
     
 
-    @GetMapping("/name")
+    @GetMapping("/felines/name")
     public Object getFelinesByName(@RequestParam String name, Model model) {
         if (name != null) {
             model.addAttribute("felines", service.getFelinesByName(name));
@@ -44,21 +44,21 @@ public class largeFelineController {
         }
         }
 
-    @GetMapping("/habitat/{habitat}")
+    @GetMapping("/felines/habitat/{habitat}")
     public Object getFelinesByHabitat(@RequestParam String habitat, Model model) {
         model.addAttribute("felines", service.getFelinesByHabitat(habitat));
         model.addAttribute("title", "Felines in Habitat: " + habitat);
         return "felines-list";
     }
 
-    @GetMapping("/population/{population}")
+    @GetMapping("/felines/population/{population}")
     public Object getFelinesByPopulationGreaterThan(@RequestParam String population, Model model) {
         model.addAttribute("felines", service.getFelinesByPopulationGreaterThan(Integer.parseInt(population)));
         model.addAttribute("title", "Felines with Population Greater Than: " + population);
         return "felines-list";
     }
 
-    @GetMapping("/weight/{weight}")
+    @GetMapping("/felines/weight/{weight}")
     public Object getFelinesByWeightGreaterThan(@RequestParam String weight, Model model) {
        model.addAttribute("felines", service.getFelinesByWeightGreaterThan(Double.parseDouble(weight)));
        model.addAttribute("title", "Felines with Weight Greater Than: " + weight);

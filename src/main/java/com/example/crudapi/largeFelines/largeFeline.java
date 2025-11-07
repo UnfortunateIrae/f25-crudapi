@@ -30,16 +30,20 @@ public class largeFeline {
     @Column(name = "population", nullable = false)
     private Integer population;
 
+    @Column(name = "imageUrl", nullable = true)
+    private String imageUrl;
+
     // Constructors
     public largeFeline() {
     }
 
-    public largeFeline(String name, String habitat, Double weight, String description, Integer population) {
+    public largeFeline(String name, String habitat, Double weight, String description, Integer population, String imageUrl) {
         this.name = name;
         this.habitat = habitat;
         this.weight = weight;
         this.description = description;
         this.population = population;
+        this.imageUrl = imageUrl;
     }
 
     // Getters and Setters
@@ -89,5 +93,13 @@ public class largeFeline {
 
     public void setPopulation(Integer population) {
         this.population = population;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
