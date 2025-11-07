@@ -1,62 +1,47 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Feline Details</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-  </head>
-  <body style="margin-bottom: 50px; padding: 0;background-color: gray;">
-    <ul>
-        <style>
-            ul {
-                list-style-type: none;
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
-                background-color: #333;
-            }
+    <title>${title!}</title>
 
-            li {
-                float: left;
-            }
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
 
-            li a {
-                display: block;
-                color: white;
-                text-align: center;
-                padding: 14px 16px;
-                text-decoration: none;
-            }
+<body style="margin-bottom: 50px; background-color: gray;">
 
-            li a:hover {
-                background-color: #111;
-            }
-        </style>
-        <li><a href="/felines">Home</a></li>
-    </ul>
-    <div style="text-align: center;">
-      <h1>${title}</h1>
-      <div class="card">
-      <h5 class="card-header">${largeFeline.name}</h5>
-      <img src="/profile-pictures/${(student.profilePicturePath)!'avatar.png'}" class="card-img-top"
-        style="height: 100px; width: 100px;" alt="profile picture">
-      <div class="card-body">
-        <span style="float:right"> <a href="/students/updateForm/${student.studentId?c}" class="btn btn-primary">Edit
-            Student</a></span>
-        <h5 class="card-title">ID: ${largeFeline.felineId?c}</h5>
-        <p class="card-text">Habitat: ${largeFeline.habitat}</p>
-        <p class="card-text">Name: ${largeFeline.name}</p>
-        <p class="card-text">Weight: ${largeFeline.weight}</p>
-        <p class="card-text">Population: ${largeFeline.population}</p>
-        <p class="card-text">Description: ${largeFeline.description}
-        <a href="/felines/delete/${largeFeline.felineId?c}" class="btn btn-danger">Delete
-          Feline</a>
+<ul style="list-style-type:none; margin:0; padding:0; overflow:hidden; background-color:#333;">
+    <li style="float:left;"><a href="/felines"
+                               style="display:block;color:white;text-align:center;padding:14px 16px;text-decoration:none;">Home</a></li>
+</ul>
 
-        <a href="/felines" class="btn btn-primary">Go back</a>
-      </div>
+<div class="container mt-4" style="text-align:center;">
+    <h1>${title!}</h1>
+
+    <div class="card mx-auto" style="max-width: 600px;">
+        <h5 class="card-header">${feline.name!}</h5>
+
+        <img src="${feline.imageUrl!}" alt="${feline.name!}"
+             style="height: 200px; width: 200px; object-fit: cover; margin:auto;">
+
+        <div class="card-body">
+            <h5 class="card-title">ID: ${feline.id!}</h5>
+
+            <p class="card-text"><strong>Name:</strong> ${feline.name!}</p>
+            <p class="card-text"><strong>Habitat:</strong> ${feline.habitat!}</p>
+            <p class="card-text"><strong>Weight:</strong> ${feline.weight!} lbs</p>
+            <p class="card-text"><strong>Population:</strong> ${feline.population!}</p>
+            <p class="card-text"><strong>Description:</strong> ${feline.description!}</p>
+
+            <a href="/felines/updateForm/${feline.id?c}" class="btn btn-primary">Edit</a>
+            <a href="/felines/delete/${feline.id?c}" class="btn btn-danger">Delete</a>
+            <a href="/felines" class="btn btn-secondary">Back</a>
+        </div>
     </div>
-    <br>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-  </body>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

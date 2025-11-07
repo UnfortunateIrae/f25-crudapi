@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   </head>
   <body style="margin: 0; padding: 0;background-color: lightgray;">
+  <p>count: ${felines?size!0}</p>
     <ul>
         <style>
             ul {
@@ -54,50 +55,25 @@
         <p>Dive into the fascinating world of animals. Discover unique facts, stunning images, and more about your favorite creatures.
              Click on the Name of an animal to learn more about it!</p>
     </header>
-    <table>
+ <table class="table">
+    <#list felines as feline>
       <tr>
-        <th style="text-align: center;"><a href="details.html"><h1>Panda Bear</h1></a></th>
-        <td><img src="https://www.randomlists.com/img/animals/panda.webp" alt="Panda" height="200" width="200"></td>
-        <td style="text-align: center;">The giant panda is a large, stocky bear with distinctive black-and-white fur,
-          moving slowly but able to climb trees when needed. Gentle and mostly solitary, 
-          it lives in China’s misty mountain forests, feeding almost entirely on bamboo.</td>
-      </tr>
+        <th style="text-align: center;">
+            <a href="/felines/${feline.id}">
+                <h1>${feline.name}</h1>
+            </a>
+        </th>
 
-      <tr>
-        <th style="text-align: center;"><a href="details.html"><h1>Blue Crab</h1></a></th>
-        <td><img src="https://www.randomlists.com/img/animals/blue_crab.webp" alt="Blue Crab" height="200" width="200"></td>
-        <td style="text-align: center;">The blue crab is a medium-sized crustacean with an olive-colored shell and 
-          bright blue claws, protected by a hard exoskeleton. It scuttles quickly sideways and swims with ease, behaving aggressively 
-          when threatened, and thrives in coastal estuaries while feeding on plants, fish, and decaying matter.</td>
-      </tr>
+        <td>
+            <img src="${feline.imageUrl!}" alt="${feline.name}" height="200" width="200">
+        </td>
 
-      <tr>
-        <th style="text-align: center;"><a href="details.html"><h1>Civet</h1></a></th>
-        <td><img src="https://www.randomlists.com/img/animals/civet.webp" alt="Civet" height="200" width="200"></td>
-        <td style="text-align: center;">The civet is a small, catlike mammal with a spotted or striped coat of 
-          short fur, often gray or brown. Nocturnal and solitary, it moves with stealth and agility, climbing trees as easily as 
-          it prowls the ground, and eats a wide diet of fruit, insects, and small prey in forests and grasslands across Africa 
-          and Asia.</td>
+        <td style="text-align: center;">
+            ${feline.description}
+        </td>
       </tr>
-
-      <tr>
-        <th style="text-align: center;"><a href="details.html"><h1>Lynx</h1></a></th>
-        <td><img src="https://www.randomlists.com/img/animals/lynx.webp" alt="Lynx" height="200" width="200"></td>
-        <td style="text-align: center;">The lynx is a medium-sized wildcat with thick, tawny to gray fur 
-          patterned with spots, and its ears are tipped with distinctive tufts. It is a silent stalker and powerful jumper, 
-          living a solitary and territorial life in boreal forests and mountains, where it preys on hares, deer, 
-          and birds.</td>
-      </tr>
-
-      <tr>
-        <th style="text-align: center;"><a href="details.html"><h1>Donkey</h1></a></th>
-        <td><img src="https://www.randomlists.com/img/animals/donkey.webp" alt="Donkey" height="200" width="200"></td>
-        <td style="text-align: center;">The donkey is a sturdy, medium-sized animal with short, coarse fur, 
-          usually gray or brown, often marked by a dark stripe along its back. Known for its steady walk and ability to 
-          traverse rough terrain, it is patient and cautious by nature, eating grasses and shrubs, and has been domesticated 
-          worldwide as a dependable working animal.</td>
-      </tr>
-    </table>
+    </#list>
+  </table>
     <br><br>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   </body>

@@ -18,6 +18,7 @@ public class largeFelineController {
 
     @GetMapping({"/felines", "/felines/"})
     public Object getAllFelines(Model model) {
+        System.out.println("Getting all felines");
         model.addAttribute("felines", service.getAllFelines());
         model.addAttribute("title", "Large Felines");
         return "felines-list";

@@ -3,85 +3,59 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Update Feline</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-        crossorigin="anonymous">
+  <title>${title!}</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body style="margin: 0; padding: 0;background-color: lightgray;">
 
-  <ul>
-    <style>
-      ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: #333;
-      }
-      li { float: left; }
-      li a {
-        display: block;
-        color:white;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
-      }
-      li a:hover { background-color: #111; }
-    </style>
+<ul style="list-style-type:none;margin:0;padding:0;overflow:hidden;background-color:#333;">
+  <li style="float:left;">
+    <a href="/felines"
+       style="display:block;color:white;text-align:center;padding:14px 16px;text-decoration:none;">
+      Home
+    </a>
+  </li>
+</ul>
 
-    <li><a href="index.html">Home</a></li>
-    <li><a href="details.html">Details</a></li>
-    <li><a href="about.html">About</a></li>
-    <li><a href="update-feline.html">Update Feline</a></li>
-  </ul>
+<h1 style="text-align:center;background-color:lightcyan;">Update Existing Feline</h1>
 
-  <h1 style="text-align:center;background-color:lightcyan;">Update Existing Feline</h1>
+<!-- form submits to your controller: @PostMapping("/felines/update/{id}") -->
+<form method="POST" action="/felines/update/${feline.id?c}" class="container mt-4">
 
-  <!-- Change the action to your backend update endpoint -->
-  <form method="POST" action="/felines/update" class="container mt-4">
-    <!-- Hidden id of the existing feline -->
-    <input type="hidden" name="id" value="12345">
+  <input type="hidden" name="id" value="${feline.id?c}">
 
-    <label for="fname" class="fw-bold">Name:</label>
-    <input type="text" id="fname" name="name" class="form-control"
-           placeholder="Enter Feline Name" required>
+  <label class="fw-bold">Name:</label>
+  <input type="text" name="name" class="form-control"
+         value="${feline.name!}" required>
 
-    <label for="lname" class="fw-bold mt-3">Breed:</label>
-    <input type="text" id="lname" name="breed" class="form-control"
-           placeholder="Enter Breed">
+  <label class="fw-bold mt-3">Image URL:</label>
+  <input type="text" name="imageUrl" class="form-control"
+         value="${feline.imageUrl!}" required>
 
-    <label class="fw-bold mt-3">Diet:</label><br>
-    <input type="radio" id="carni" name="diet" value="Carnivore">
-    <label for="carni">Carnivore</label><br>
-    <input type="radio" id="omni" name="diet" value="Omnivore">
-    <label for="omni">Omnivore</label><br>
-    <input type="radio" id="herbi" name="diet" value="Herbivore">
-    <label for="herbi">Herbivore</label><br><br>
+  <label class="fw-bold mt-3">Habitat:</label>
+  <input type="text" name="habitat" class="form-control"
+         value="${feline.habitat!}">
 
-    <label class="fw-bold">Fur Pattern / Color:</label>
-    <input type="text" id="porc" name="color" class="form-control"
-           placeholder="Describe pattern & color">
+  <label class="fw-bold mt-3">Weight:</label>
+  <input type="number" step="0.1" name="weight" class="form-control"
+         value="${feline.weight!}">
 
-    <label for="vacc" class="fw-bold mt-3">Vaccinated:</label>
-    <select id="vacc" name="vaccinated" class="form-select" style="width: fit-content;">
-      <option value="yes">Yes</option>
-      <option value="no">No</option>
-    </select>
+  <label class="fw-bold mt-3">Population:</label>
+  <input type="number" name="population" class="form-control"
+         value="${feline.population!}">
 
-    <label for="notes" class="fw-bold mt-3">Notes:</label>
-    <textarea id="notes" name="notes" class="form-control" rows="3"
-              placeholder="Behavior, temperament, health notes"></textarea>
+  <label class="fw-bold mt-3">Description:</label>
+  <textarea name="description" class="form-control" rows="3">${feline.description!}</textarea>
 
-    <input type="submit"
-           value="Save Changes"
-           class="btn mt-4"
-           style="background-color: lightcyan;">
-  </form>
+  <input type="submit"
+         value="Save Changes"
+         class="btn mt-4"
+         style="background-color: lightcyan;">
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-          crossorigin="anonymous"></script>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
