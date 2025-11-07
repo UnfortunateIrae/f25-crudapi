@@ -25,6 +25,8 @@ public class largeFelineController {
     @GetMapping("/felines/{id}")
     public String getFelineById(@PathVariable("id") Long id, Model model) {
         model.addAttribute("feline", service.getFelineById(id));
+        largeFeline feline = service.getFelineById(id);
+        System.out.println("Fetched feline: " + feline);
         model.addAttribute("title", "Feline Details");
         return "felines-details";
     }

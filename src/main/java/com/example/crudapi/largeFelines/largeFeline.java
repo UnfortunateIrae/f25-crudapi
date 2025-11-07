@@ -27,7 +27,7 @@ public class largeFeline {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "population", nullable = false)
+    @Column(name = "population", nullable = true)
     private Integer population;
 
     @Column(name = "imageUrl", nullable = true)
@@ -102,4 +102,17 @@ public class largeFeline {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    @Override
+    public String toString() {
+    return "largeFeline{" +
+           "id=" + felineId +
+           ", name='" + name + '\'' +
+           ", population=" + population +
+           ", habitat='" + habitat + '\'' +
+           ", imageUrl='" + imageUrl + '\'' +
+           ", weight=" + weight +
+           ", description='" + description + '\'' +
+           '}';
+}
 }
