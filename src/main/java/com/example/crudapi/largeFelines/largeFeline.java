@@ -27,19 +27,23 @@ public class largeFeline {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "population", nullable = false)
+    @Column(name = "population", nullable = true)
     private Integer population;
+
+    @Column(name = "imageUrl", nullable = true)
+    private String imageUrl;
 
     // Constructors
     public largeFeline() {
     }
 
-    public largeFeline(String name, String habitat, Double weight, String description, Integer population) {
+    public largeFeline(String name, String habitat, Double weight, String description, Integer population, String imageUrl) {
         this.name = name;
         this.habitat = habitat;
         this.weight = weight;
         this.description = description;
         this.population = population;
+        this.imageUrl = imageUrl;
     }
 
     // Getters and Setters
@@ -90,4 +94,25 @@ public class largeFeline {
     public void setPopulation(Integer population) {
         this.population = population;
     }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public String toString() {
+    return "largeFeline{" +
+           "id=" + felineId +
+           ", name='" + name + '\'' +
+           ", population=" + population +
+           ", habitat='" + habitat + '\'' +
+           ", imageUrl='" + imageUrl + '\'' +
+           ", weight=" + weight +
+           ", description='" + description + '\'' +
+           '}';
+}
 }

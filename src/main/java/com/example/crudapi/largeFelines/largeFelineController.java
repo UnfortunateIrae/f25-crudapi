@@ -1,136 +1,103 @@
 package com.example.crudapi.largeFelines;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/felines")
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+
+@Controller
 public class largeFelineController {
 
     @Autowired
     private largeFelineService service;
 
-    public void init() {
-        service.createFeline(new largeFeline("Lion", "Savannah", 420.0, "Large social cat", 20000));
-        service.createFeline(new largeFeline("Tiger", "Forest", 500.0, "Largest cat species", 3900));
-        service.createFeline(new largeFeline("Leopard", "Forest", 200.0, "Spotted big cat", 700000));
-        service.createFeline(new largeFeline("Cheetah", "Savannah", 150.0, "Fastest land animal", 7100));
+    @GetMapping({"/felines", "/felines/"})
+    public Object getAllFelines(Model model) {
+        model.addAttribute("felines", service.getAllFelines());
+        model.addAttribute("title", "Large Felines");
+        return "felines-list";
     }
 
-    @GetMapping
-    public ResponseEntity<Object> getAllFelines() {
-        return ResponseEntity.ok(service.getAllFelines());
+    @GetMapping("/felines/{id}")
+    public String getFelineById(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("feline", service.getFelineById(id));
+        largeFeline feline = service.getFelineById(id);
+        System.out.println("Fetched feline: " + feline);
+        model.addAttribute("title", "Feline Details");
+        return "felines-details";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getFelineById(@PathVariable("id") Long id) {
-        largeFeline feline = (largeFeline) service.getFelineById(id);
-        return (feline != null)
-                ? ResponseEntity.ok(feline)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Feline not found");
-    }
+    
 
-    @PostMapping
-    public ResponseEntity<Object> createFeline(@RequestBody largeFeline feline) {
-        largeFeline created = (largeFeline) service.createFeline(feline);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateFeline(@PathVariable("id") Long id, @RequestBody largeFeline feline) {
-        largeFeline existing = (largeFeline) service.getFelineById(id);
-        if (existing != null) {
-            feline.setId(id);
-            service.updateFeline(id, feline);
-            return ResponseEntity.ok(feline);
+    @GetMapping("/felines/name")
+    public Object getFelinesByName(@PathVariable String name, Model model) {
+        if (name != null) {
+            model.addAttribute("felines", service.getFelinesByName(name));
+            model.addAttribute("title", "Felines Named " + name);
+            return "felines-list";
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Feline not found");
+        else {
+            return "redirect:/felines";
+        }
+        }
+
+    @GetMapping("/felines/habitat/{habitat}")
+    public Object getFelinesByHabitat(@PathVariable String habitat, Model model) {
+        model.addAttribute("felines", service.getFelinesByHabitat(habitat));
+        model.addAttribute("title", "Felines in Habitat: " + habitat);
+        return "felines-list";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteFeline(@PathVariable("id") Long id) {
-        largeFeline existing = (largeFeline) service.getFelineById(id);
-        if (existing != null) {
-            service.deleteFeline(id);
-            return ResponseEntity.ok("Feline deleted successfully");
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Feline not found");
+    @GetMapping("/felines/population/{population}")
+    public Object getFelinesByPopulationGreaterThan(@PathVariable String population, Model model) {
+        model.addAttribute("felines", service.getFelinesByPopulationGreaterThan(Integer.parseInt(population)));
+        model.addAttribute("title", "Felines with Population Greater Than: " + population);
+        return "felines-list";
     }
 
-    @GetMapping("/name")
-    public ResponseEntity<Object> getFelinesByName(@RequestParam String name) {
-        List<largeFeline> result = new ArrayList<>();
-        for (largeFeline feline : (List<largeFeline>) service.getAllFelines()) {
-            if (feline.getName().contains(name)) {
-                result.add(feline);
-            }
-        }
-        return result.isEmpty()
-                ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("No felines found with that name")
-                : ResponseEntity.ok(result);
+    @GetMapping("/felines/weight/{weight}")
+    public Object getFelinesByWeightGreaterThan(@PathVariable String weight, Model model) {
+       model.addAttribute("felines", service.getFelinesByWeightGreaterThan(Double.parseDouble(weight)));
+       model.addAttribute("title", "Felines with Weight Greater Than: " + weight);
+         return "felines-list";
     }
 
-    @GetMapping("/habitat")
-    public ResponseEntity<Object> getFelinesByHabitat(@RequestParam String habitat) {
-        List<largeFeline> result = new ArrayList<>();
-        for (largeFeline feline : (List<largeFeline>) service.getAllFelines()) {
-            if (feline.getHabitat().equalsIgnoreCase(habitat)) {
-                result.add(feline);
-            }
-        }
-        return result.isEmpty()
-                ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("No felines found in that habitat")
-                : ResponseEntity.ok(result);
+    @GetMapping("/felines/updateForm/{id}")
+    public Object showUpdateForm(@PathVariable Long id, Model model) {
+        largeFeline feline = service.getFelineById(id);
+        model.addAttribute("feline", feline);
+        model.addAttribute("title", "Update Feline");
+        return "felines-update";
     }
 
-    @GetMapping("/population")
-    public ResponseEntity<Object> getFelinesByPopulationGreaterThan(@RequestParam String population) {
-        try {
-            int pop = Integer.parseInt(population);
-            List<largeFeline> result = service.getFelinesByPopulationGreaterThan(pop);
-            if (result == null || result.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("No felines found with population greater than " + pop);
-            }
-            return ResponseEntity.ok(result);
-        } catch (NumberFormatException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Invalid population value: " + population);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Server error: " + e.getMessage());
-        }
+    @GetMapping("/felines/createForm")
+    public Object showCreateForm(Model model) {
+        largeFeline feline = new largeFeline();
+        model.addAttribute("feline", feline);
+        model.addAttribute("title", "Create New Feline");
+        return "felines-create";
     }
 
-    @GetMapping("/weight")
-    public ResponseEntity<Object> getFelinesByWeightGreaterThan(@RequestParam String weight) {
-        try {
-            double w = Double.parseDouble(weight);
-            List<largeFeline> result = service.getFelinesByWeightGreaterThan(w);
-            if (result == null || result.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("No felines found with weight greater than " + w);
-            }
-            return ResponseEntity.ok(result);
-        } catch (NumberFormatException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Invalid weight value: " + weight);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Server error: " + e.getMessage());
-        }
+    @PostMapping("/felines")
+    public String createFeline(@ModelAttribute largeFeline feline) {
+        service.createFeline(feline);
+        return "redirect:/felines/" + feline.getId();
     }
+
+    @PostMapping("/felines/update/{id}")
+    public Object updateFeline(@PathVariable("id") Long id, @ModelAttribute largeFeline feline) {
+        service.updateFeline(id, feline);
+        return "redirect:/felines/" + id;
+    }
+
+    @GetMapping("/felines/delete/{id}")
+    public Object deleteFeline(@PathVariable("id") Long id) {
+        service.deleteFeline(id);
+        return "redirect:/felines";
+    }
+
 }
